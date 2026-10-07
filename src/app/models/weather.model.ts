@@ -1,6 +1,8 @@
+export interface WeatherCurrent {
+  temperature_2m: number;
+  rain: number;
+}
+
 export interface WeatherModel {
-  current: {
-    temperature_2m: number;
-    rain: number;
-  };
+  current: WeatherCurrent;
 }
