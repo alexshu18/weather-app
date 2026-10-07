@@ -1,1 +1,5 @@
-<p>weather-page works!</p>
+@if (weatherData(); as wd) {
+
+  <p>Temperature: {{wd.current.temperature_2m}} Celsius</p>
+  <p>Rain: {{wd.current.rain}} mm</p>
+}
