@@ -8,10 +8,16 @@ import { WeatherModel } from '../models/weather.model';
 })
 export class WeatherService {
   private readonly http = inject(HttpClient);
-  private readonly url =
-    'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&current=temperature_2m,rain&timezone=auto';
+  private readonly url = 'https://api.open-meteo.com/v1/forecast';
 
-  getWeather(): Observable<WeatherModel> {
-    return this.http.get<WeatherModel>(this.url);
+  getWeather(latitude: number, longitude: number): Observable<WeatherModel> {
+    return this.http.get<WeatherModel>(this.url, {
+      params: {
+        latitude,
+        longitude,
+        current: 'temperature_2m,rain',
+        timezone: 'auto',
+      },
+    });
   }
 }
