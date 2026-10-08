@@ -13,14 +13,21 @@ export class WeatherPage implements OnInit {
   private readonly weatherService = inject(WeatherService);
 
   protected readonly weatherData = signal<WeatherModel | undefined>(undefined);
+  protected readonly errorMessage = signal<string | null>(null);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
     this.weatherService
       .getWeather(52.52, 13.41)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((data) => {
-        this.weatherData.set(data);
+      .subscribe({
+        next: (data) => {
+          this.weatherData.set(data);
+        },
+        error: (err) => {
+          this.errorMessage.set('Failed to load weather. Please try again later.');
+          console.error(err);
+        },
       });
   }
 }
