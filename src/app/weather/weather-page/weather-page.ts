@@ -2,6 +2,7 @@ import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
 import { WeatherService } from '../../services/weather';
 import { WeatherModel } from '../../models/weather.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-weather-page',
@@ -24,10 +25,22 @@ export class WeatherPage implements OnInit {
         next: (data) => {
           this.weatherData.set(data);
         },
-        error: (err) => {
-          this.errorMessage.set('Failed to load weather. Please try again later.');
+        error: (err: HttpErrorResponse) => {
+          this.errorMessage.set(this.getHttpError(err.status));
           console.error(err);
         },
       });
+  }
+
+  private getHttpError(status: number): string {
+    if (status === 0) {
+      return 'No connection';
+    } else if (status >= 400 && status < 500) {
+      return 'Error of request';
+    } else if (status >= 500 && status < 600) {
+      return 'Service unavailable';
+    } else {
+     return 'Unexpected';
+    }
   }
 }
