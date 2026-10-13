@@ -54,6 +54,29 @@ ng e2e
 
 Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
 
+## Status
+
+Work in progress. Built step by step, every feature goes through a pull request with code review.
+
+### Done
+- [x] Angular app with standalone components
+- [x] Weather service with HttpClient, typed response models, query params
+- [x] API URL in environment configs (dev / prod)
+- [x] Lazy-loaded routing (`loadChildren`) with redirect from `/`
+- [x] Data loading via RxJS `subscribe` with `takeUntilDestroyed`, signals for UI state
+- [x] Loading and error states, error messages based on HTTP status
+
+### In progress
+- [ ] Spring Boot REST API for favourite cities (Spring Data JPA, H2)
+- [ ] CORS setup and Angular service for favourites
+
+### Planned
+- [ ] City search with autocomplete (debounceTime, switchMap)
+- [ ] Multi-day forecast
+- [ ] Unit tests
+- [ ] CI with GitHub Actions
+
 ## Additional Resources
 
 For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+
