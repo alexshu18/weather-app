@@ -28,4 +28,9 @@ public class FavoriteCityController {
     public void deleteCity(@PathVariable Long id){
         favoriteCityService.deleteCity(id);
     }
+
+    @PatchMapping("/{id}")
+    public FavoriteCity renameCity(@PathVariable Long id, @RequestBody RenameCityRequest request){
+        return favoriteCityService.renameCity(id, request.name());
+    }
 }
