@@ -25,13 +25,13 @@ public class FavoriteCityService {
 
     public void deleteCity(Long id) {
         if (!repository.existsById(id)) {
-            throw new IllegalArgumentException("City with such id: " + id + " not found");
+            throw new CityNotFoundException(id);
         }
         repository.deleteById(id);
     }
 
     public FavoriteCity renameCity(Long id, String newName) {
-        FavoriteCity city = repository.findById(id).orElseThrow(() -> new IllegalArgumentException("Not found with id: " + id));
+        FavoriteCity city = repository.findById(id).orElseThrow(() -> new CityNotFoundException(id));
         city.setName(newName);
         return repository.save(city);
     }
