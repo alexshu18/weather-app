@@ -32,7 +32,15 @@ Open http://localhost:4200, the app redirects to `/weather`.
 
 ### Backend
 
-Coming soon.
+Requirements: JDK 21.
+
+```bash
+cd backend
+./mvnw spring-boot:run
+```
+
+API runs on http://localhost:8080/api/favorites.
+Data is stored in an in-memory H2 database and is reset on restart.
 
 ## Status
 
@@ -45,12 +53,16 @@ Work in progress. Features are developed in branches and merged via pull request
 - [x] Lazy-loaded routing (`loadChildren`) with redirect from `/`
 - [x] Data loading via RxJS `subscribe` with `takeUntilDestroyed`, signals for UI state
 - [x] Loading and error states, error messages based on HTTP status
+- [x] Spring Boot backend: `FavoriteCity` entity, JPA repository, service layer
+- [x] REST API: `GET /api/favorites`, `POST /api/favorites`
 
 ### In progress
-- [ ] Spring Boot REST API for favourite cities (Spring Data JPA, H2)
+- [ ] REST API: `DELETE /api/favorites/{id}`, `PATCH /api/favorites/{id}` (rename)
+- [ ] Error handling in the API (404 for unknown id)
 - [ ] CORS setup and Angular service for favourites
 
 ### Planned
+- [ ] PostgreSQL instead of in-memory H2, running in Docker
 - [ ] City search with autocomplete (debounceTime, switchMap)
 - [ ] Multi-day forecast
 - [ ] Unit tests
