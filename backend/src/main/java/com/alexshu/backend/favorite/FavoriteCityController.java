@@ -1,5 +1,6 @@
 package com.alexshu.backend.favorite;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class FavoriteCityController {
         return favoriteCityService.getAllCities();
     }
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public FavoriteCity addCity(@RequestBody FavoriteCity city){
         return favoriteCityService.addCity(city);
