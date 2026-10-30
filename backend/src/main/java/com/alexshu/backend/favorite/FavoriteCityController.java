@@ -26,6 +26,7 @@ public class FavoriteCityController {
         return favoriteCityService.addCity(city);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
     public void deleteCity(@PathVariable Long id){
         favoriteCityService.deleteCity(id);
