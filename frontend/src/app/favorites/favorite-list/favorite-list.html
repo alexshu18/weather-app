@@ -1,0 +1,13 @@
+<ul>
+  @for (city of favoriteCities(); track city.id) {
+    <li>{{ city.name }}, {{ city.country }}
+      <button (click)="deleteCity(city.id)">Delete</button>
+    </li>
+  } @empty {
+    <li>There are no cities</li>
+  }
+</ul>
+@if (errorMessage(); as em) {
+  <p>{{ em }}</p>
+}
+

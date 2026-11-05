@@ -1,5 +1,4 @@
 @if (weatherData(); as wd) {
-
   <p>Temperature: {{wd.current.temperature_2m}} Celsius</p>
   <p>Rain: {{wd.current.rain}} mm</p>
 } @else if (errorMessage(); as em){
@@ -7,3 +6,4 @@
 } @else {
   <p>Loading...</p>
 }
+<app-favorite-list></app-favorite-list>

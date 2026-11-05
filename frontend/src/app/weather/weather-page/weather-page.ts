@@ -4,10 +4,11 @@ import { WeatherModel } from '../../models/weather.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getHttpError } from '../../shared/http-error';
+import { FavoriteList } from '../../favorites/favorite-list/favorite-list';
 
 @Component({
   selector: 'app-weather-page',
-  imports: [],
+  imports: [FavoriteList],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
