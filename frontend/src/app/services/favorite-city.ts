@@ -1,9 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { WeatherModel } from '../models/weather.model';
 import { environment } from '../../environments/environment';
-import { FavoriteCityModel, NewFavoriteCityModel } from '../models/favorite-city.model';
+import { CityModel, FavoriteCityModel } from '../models/favorite-city.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +15,7 @@ export class FavoriteCity {
     return this.http.get<FavoriteCityModel[]>(this.apiUrl);
   }
 
-  addCity(city: NewFavoriteCityModel): Observable<FavoriteCityModel> {
+  addCity(city: CityModel): Observable<FavoriteCityModel> {
     return this.http.post<FavoriteCityModel>(this.apiUrl, city);
   }
 
