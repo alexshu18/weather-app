@@ -1,0 +1,14 @@
+<input #cityInput (keyup.enter)="search(cityInput.value)" placeholder="Search city...">
+<button (click)="search(cityInput.value)">Search</button>
+@if (errorMessage(); as em) {
+  <p>{{ em }}</p>
+}
+@if (cityResults(); as cr) {
+  <ul>
+    @for (city of cr; track city.id) {
+      <li (click)="selectCity(city)">{{ city.name }}, @if (city.admin1) { {{ city.admin1 }}, }{{ city.country }}</li>
+    } @empty {
+      <li>No results found</li>
+    }
+  </ul>
+}
