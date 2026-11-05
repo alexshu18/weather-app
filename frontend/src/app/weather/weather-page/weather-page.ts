@@ -20,8 +20,14 @@ export class WeatherPage implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
+    this.loadWeather(56.95, 24.11);
+  }
+
+  private loadWeather(latitude: number, longitude: number) {
+    this.weatherData.set(undefined);
+    this.errorMessage.set(null);
     this.weatherService
-      .getWeather(52.52, 13.41)
+      .getWeather(latitude, longitude)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
@@ -30,9 +36,7 @@ export class WeatherPage implements OnInit {
         error: (err: HttpErrorResponse) => {
           this.errorMessage.set(getHttpError(err.status));
           console.error(err);
-        }
+        },
       });
   }
-
-
 }
