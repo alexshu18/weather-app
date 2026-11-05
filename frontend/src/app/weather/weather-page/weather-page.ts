@@ -3,6 +3,7 @@ import { WeatherService } from '../../services/weather';
 import { WeatherModel } from '../../models/weather.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
+import { getHttpError } from '../../shared/http-error';
 
 @Component({
   selector: 'app-weather-page',
@@ -26,21 +27,11 @@ export class WeatherPage implements OnInit {
           this.weatherData.set(data);
         },
         error: (err: HttpErrorResponse) => {
-          this.errorMessage.set(this.getHttpError(err.status));
+          this.errorMessage.set(getHttpError(err.status));
           console.error(err);
-        },
+        }
       });
   }
 
-  private getHttpError(status: number): string {
-    if (status === 0) {
-      return 'No connection';
-    } else if (status >= 400 && status < 500) {
-      return 'Error of request';
-    } else if (status >= 500 && status < 600) {
-      return 'Service unavailable';
-    } else {
-     return 'Unexpected';
-    }
-  }
+
 }
