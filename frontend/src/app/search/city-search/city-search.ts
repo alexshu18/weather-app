@@ -42,6 +42,4 @@ export class CitySearch {
     this.citySelected.emit(city);
     this.cityResults.set(undefined);
   }
-
-  protected readonly name = name;
 }

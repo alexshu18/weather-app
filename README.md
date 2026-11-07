@@ -1,9 +1,9 @@
 # Weather App
 
 Full-stack weather app built with **Angular** and **Spring Boot**.
-Search for any city, see its current weather and keep a list of favourite cities stored in PostgreSQL.
+Search for any city, see its current weather, keep favourite cities and group them into lists (for example "Travel" or "Family"), all stored in PostgreSQL.
 
-Weather and city search come from the [Open-Meteo](https://open-meteo.com/) APIs; favourites are managed by the app's own REST API.
+Weather and city search come from the [Open-Meteo](https://open-meteo.com/) APIs; favourites and lists are managed by the app's own REST API.
 
 ## Tech stack
 
@@ -52,6 +52,11 @@ cd backend
 The backend reads database credentials from `../.env`, so it must be started from the `backend` folder.
 On start, Flyway applies the migrations from `backend/src/main/resources/db/migration`, then Hibernate validates the schema against the entities (`ddl-auto=validate`).
 
+| Migration | Creates |
+|---|---|
+| `V1__create_favorite_city.sql` | `favorite_city` table and its id sequence |
+| `V2__create_city_lists.sql` | `city_list` table, its id sequence and the `city_list_favorite_city` join table (many-to-many, `ON DELETE CASCADE`) |
+
 The API runs on http://localhost:8080.
 
 ### 3. Frontend
@@ -75,14 +80,29 @@ docker compose up -d
 
 ## REST API
 
+### Favourite cities
+
 | Method | Endpoint | Description | Body | Success |
 |---|---|---|---|---|
 | GET | `/api/favorites` | List all favourite cities | — | 200 OK |
 | POST | `/api/favorites` | Add a city | `{"name": "Riga", "country": "Latvia", "latitude": 56.95, "longitude": 24.11}` | 201 Created |
 | PATCH | `/api/favorites/{id}` | Rename a city | `{"name": "Home"}` | 200 OK |
-| DELETE | `/api/favorites/{id}` | Delete a city | — | 204 No Content |
+| DELETE | `/api/favorites/{id}` | Delete a city (also removes it from all lists) | — | 204 No Content |
 
-Unknown `id` returns **404 Not Found**.
+### City lists
+
+| Method | Endpoint | Description | Body | Success |
+|---|---|---|---|---|
+| GET | `/api/lists` | All lists with their cities | — | 200 OK |
+| POST | `/api/lists` | Create a list | `{"name": "Travel"}` | 201 Created |
+| PATCH | `/api/lists/{id}` | Rename a list | `{"name": "Trips"}` | 200 OK |
+| DELETE | `/api/lists/{id}` | Delete a list (cities stay in favourites) | — | 204 No Content |
+| POST | `/api/lists/{listId}/cities/{cityId}` | Add a favourite city to a list | — | 200 OK |
+| DELETE | `/api/lists/{listId}/cities/{cityId}` | Remove a city from a list | — | 200 OK |
+
+A list is returned as `{"id": 1, "name": "Travel", "cities": [{"id": 1, "name": "Riga", "country": "Latvia", "latitude": 56.95, "longitude": 24.11}]}`.
+
+Unknown list or city `id` returns **404 Not Found**.
 CORS is enabled for the Angular dev server (`http://localhost:4200`) on `/api/**`.
 
 ## Status
@@ -108,15 +128,20 @@ Work in progress. Features are developed in branches and merged into `main` via 
 - [x] PostgreSQL in Docker instead of in-memory H2
 - [x] Database credentials in `.env`, not in Git
 - [x] Flyway migrations, Hibernate schema validation
+- [x] City lists: many-to-many relation (`@ManyToMany` + join table), CRUD and add/remove cities
+- [x] Service layer with `@Transactional` (dirty checking, read-only transactions)
+- [x] DTOs (Java records) for requests and responses, entities never leave the service layer
+- [x] `open-in-view` disabled: lazy relations are loaded inside transactions
 
 ### Next
+- [ ] City lists in the UI
 - [ ] Show the selected city name above the weather
 - [ ] Add a city to favourites from the UI
 - [ ] Refresh the favourites list after adding
 - [ ] Click on a favourite city to show its weather
 
 ### Planned
-- [ ] User entity and relations between entities (user ↔ favourite cities and more), new Flyway migrations
+- [ ] User entity: favourites and lists belong to a user (one-to-many), new Flyway migration
 - [ ] Authentication with JWT (access + refresh tokens), Angular `authGuard` and HTTP interceptor
 - [ ] Angular Material with own wrapper components (buttons, inputs, forms)
 - [ ] Request validation (400 Bad Request) and `NOT NULL` constraints in the database
