@@ -18,13 +18,15 @@ public class CityListService {
         this.cityListRepository = cityListRepository;
     }
 
-    public CityList createList(String name) {
+    @Transactional
+    public CityListResponse createList(String name) {
         CityList cityList = new CityList(name);
-        return cityListRepository.save(cityList);
+        return CityListResponse.from(cityListRepository.save(cityList));
     }
 
-    public List<CityList> getAllLists() {
-        return cityListRepository.findAll();
+    @Transactional(readOnly = true)
+    public List<CityListResponse> getAllLists() {
+        return cityListRepository.findAll().stream().map(CityListResponse::from).toList();
     }
 
     @Transactional
@@ -36,26 +38,26 @@ public class CityListService {
     }
 
     @Transactional
-    public CityList addCityToList(Long listId, Long cityId) {
+    public CityListResponse addCityToList(Long listId, Long cityId) {
         CityList cityList = findListOrThrow(listId);
         FavoriteCity favoriteCity = findCityOrThrow(cityId);
         cityList.addCity(favoriteCity);
-        return cityList;
+        return CityListResponse.from(cityList);
     }
 
     @Transactional
-    public CityList removeCityFromList(Long listId, Long cityId) {
+    public CityListResponse removeCityFromList(Long listId, Long cityId) {
         CityList cityList = findListOrThrow(listId);
         FavoriteCity favoriteCity = findCityOrThrow(cityId);
         cityList.removeCity(favoriteCity);
-        return cityList;
+        return CityListResponse.from(cityList);
     }
 
     @Transactional
-    public CityList renameList(Long id, String newName) {
+    public CityListResponse renameList(Long id, String newName) {
         CityList cityList = findListOrThrow(id);
         cityList.setName(newName);
-        return cityList;
+        return CityListResponse.from(cityList);
     }
 
     private CityList findListOrThrow(Long id) {
