@@ -1,6 +1,7 @@
 package com.alexshu.backend.auth;
 
 import com.alexshu.backend.user.User;
+import com.alexshu.backend.user.UserNotFoundException;
 import com.alexshu.backend.user.UserRepository;
 import com.alexshu.backend.user.UserResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -47,6 +48,12 @@ public class AuthService {
         }
         String token = jwtService.generateToken(user);
         return new LoginResponse(token);
+    }
+
+    @Transactional(readOnly = true)
+    public UserResponse getCurrentUser(Long id){
+       User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(id));
+       return UserResponse.from(user);
     }
 
     private String normalizeEmail(String email){
