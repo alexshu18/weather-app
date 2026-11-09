@@ -5,10 +5,21 @@ import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getHttpError } from '../../shared/http-error';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-login',
-  imports: [ReactiveFormsModule, RouterLink],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+  ],
   templateUrl: './login.html',
   styleUrl: './login.scss',
 })
@@ -39,14 +50,14 @@ export class Login {
           this.router.navigate(['/weather']);
         },
         error: (err: HttpErrorResponse) => {
-          if (err.status === 401){
+          if (err.status === 401) {
             this.error.set('Invalid email or password');
           } else {
             this.error.set(getHttpError(err.status));
           }
           this.loading.set(false);
           console.error(err);
-        }
+        },
       });
   }
 }
