@@ -1,11 +1,24 @@
 <app-header />
-<app-city-search (citySelected)="onCitySelected($event)"></app-city-search>
-@if (weatherData(); as wd) {
-  <p>Temperature: {{wd.current.temperature_2m}} Celsius</p>
-  <p>Rain: {{wd.current.rain}} mm</p>
-} @else if (errorMessage(); as em){
-  <p>{{em}}</p>
-} @else {
-  <p>Loading...</p>
-}
-<app-favorite-list></app-favorite-list>
+<main class="content">
+  <app-city-search (citySelected)="onCitySelected($event)"></app-city-search>
+  @if (weatherData(); as wd) {
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>{{ selectedCity()?.name }}, {{ selectedCity()?.country }}</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <span class="temperature">Temperature: {{ wd.current.temperature_2m }} °C</span>
+        </div>
+        <div>
+          <span>Rain: {{ wd.current.rain }} mm</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  } @else if (errorMessage(); as em) {
+    <p>{{ em }}</p>
+  } @else {
+    <p>Loading...</p>
+  }
+  <app-favorite-list></app-favorite-list>
+</main>

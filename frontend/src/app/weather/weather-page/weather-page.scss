@@ -1,0 +1,12 @@
+.content {
+  padding: 24px;
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.temperature {
+  font: var(--mat-sys-display-small);
+}

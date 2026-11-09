@@ -1,0 +1,20 @@
+@use '@angular/material' as mat;
+
+.spacer {
+  flex: 1;
+}
+
+mat-toolbar {
+  --mat-toolbar-container-background-color: var(--mat-sys-primary);
+  --mat-toolbar-container-text-color: var(--mat-sys-on-primary);
+}
+
+.logout {
+  --mat-button-outlined-label-text-color: var(--mat-sys-on-primary);
+  --mat-button-outlined-outline-color: var(--mat-sys-on-primary);
+}
+
+.email {
+  font: var(--mat-sys-body-medium);
+  margin-right: 12px;
+}
