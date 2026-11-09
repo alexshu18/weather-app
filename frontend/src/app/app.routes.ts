@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './guards/auth-guard';
 
 export const routes: Routes = [
   {
     path: 'weather',
     loadChildren: () => import('./weather/weather.routes').then((m) => m.weatherRoutes),
+    canActivate: [authGuard],
   },
   {
     path: '',
