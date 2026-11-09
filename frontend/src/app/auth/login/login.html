@@ -1,0 +1,21 @@
+<form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+  <input formControlName="email" type="email" placeholder="Email">
+  @if (loginForm.controls.email.invalid && loginForm.controls.email.touched) {
+    @if (loginForm.controls.email.hasError('required')) {
+      <p>Email is required</p>
+    } @else if (loginForm.controls.email.hasError('email')) {
+      <p>Invalid email format</p>
+    }
+  }
+  <input formControlName="password" type="password" placeholder="password">
+  @if (loginForm.controls.password.invalid && loginForm.controls.password.touched) {
+    @if (loginForm.controls.password.hasError('required')) {
+      <p>Password is required</p>
+    }
+  }
+  <button type="submit" [disabled]="loading()">Login</button>
+</form>
+@if (error(); as err) {
+  <p>{{ err }}</p>
+}
+<a routerLink="/register">No account? Register here</a>

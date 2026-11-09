@@ -1,3 +1,4 @@
+<app-header />
 <app-city-search (citySelected)="onCitySelected($event)"></app-city-search>
 @if (weatherData(); as wd) {
   <p>Temperature: {{wd.current.temperature_2m}} Celsius</p>

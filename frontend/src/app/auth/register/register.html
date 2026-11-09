@@ -1,0 +1,23 @@
+<form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+  <input formControlName="email" type="email" placeholder="Email">
+  @if (registerForm.controls.email.invalid && registerForm.controls.email.touched) {
+    @if (registerForm.controls.email.hasError('required')) {
+      <p>Email is required</p>
+    } @else if (registerForm.controls.email.hasError('email')) {
+      <p>Invalid email format</p>
+    }
+  }
+  <input formControlName="password" type="password" placeholder="password">
+  @if (registerForm.controls.password.invalid && registerForm.controls.password.touched) {
+    @if (registerForm.controls.password.hasError('required')) {
+      <p>Password is required</p>
+    } @else if (registerForm.controls.password.hasError('minlength')){
+      <p>Minimal length of password is 8 characters</p>
+    }
+  }
+  <button type="submit" [disabled]="loading()">Register</button>
+</form>
+@if (error(); as err) {
+  <p>{{ err }}</p>
+}
+<a routerLink="/login">Already have an account? Login here</a>
