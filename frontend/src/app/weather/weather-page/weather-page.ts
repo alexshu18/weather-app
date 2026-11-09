@@ -7,10 +7,11 @@ import { getHttpError } from '../../shared/http-error';
 import { FavoriteList } from '../../favorites/favorite-list/favorite-list';
 import { CitySearch } from '../../search/city-search/city-search';
 import { CityModel } from '../../models/favorite-city.model';
+import { Header } from '../../shared/header/header';
 
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch],
+  imports: [FavoriteList, CitySearch, Header],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })

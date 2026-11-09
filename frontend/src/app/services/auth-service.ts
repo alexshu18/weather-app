@@ -37,6 +37,10 @@ export class AuthService {
     this.router.navigate(['/login']);
   }
 
+  me(): Observable<UserResponse> {
+    return this.http.get<UserResponse>(`${this.apiUrl}/me`);
+  }
+
   private saveToken(accessToken: string) {
     localStorage.setItem(TOKEN_KEY, accessToken);
     this.token.set(accessToken);
