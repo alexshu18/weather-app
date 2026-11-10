@@ -7,11 +7,11 @@ import { getHttpError } from '../../shared/http-error';
 import { FavoriteList } from '../../favorites/favorite-list/favorite-list';
 import { CitySearch } from '../../search/city-search/city-search';
 import { CityModel } from '../../models/favorite-city.model';
-import { Header } from '../../shared/header/header';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { FavoriteCity } from '../../services/favorite-city';
 import { MatButtonModule } from '@angular/material/button';
+import { ActivatedRoute, Router } from '@angular/router';
 
 const DEFAULT_CITY: CityModel = {
   name: 'Riga',
@@ -21,12 +21,14 @@ const DEFAULT_CITY: CityModel = {
 };
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch, Header, MatCardModule, MatProgressSpinner, MatButtonModule],
+  imports: [FavoriteList, CitySearch, MatCardModule, MatProgressSpinner, MatButtonModule],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
 export class WeatherPage implements OnInit {
   private readonly weatherService = inject(WeatherService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
 
   protected readonly weatherData = signal<WeatherModel | undefined>(undefined);
   protected readonly errorMessage = signal<string | null>(null);
@@ -35,8 +37,23 @@ export class WeatherPage implements OnInit {
   private readonly favoriteCityService = inject(FavoriteCity);
 
   ngOnInit() {
-    this.onCitySelected(DEFAULT_CITY);
+    this.route.queryParamMap.pipe(takeUntilDestroyed(this.destroyRef)).subscribe((params) => {
+      const name = params.get('name');
+      const lat = params.get('lat');
+      const lon = params.get('lon');
+      if (!name || !lat || !lon) {
+        this.showCity(DEFAULT_CITY);
+        return;
+      }
+      this.showCity({
+        name,
+        country: params.get('country') ?? '',
+        latitude: Number(lat),
+        longitude: Number(lon),
+      });
+    });
   }
+
   addToFavorites() {
     const city = this.selectedCity();
     if (!city) return;
@@ -64,11 +81,21 @@ export class WeatherPage implements OnInit {
         },
       });
   }
-  protected onCitySelected(city: CityModel) {
-    this.weatherData.set(undefined);
-    this.errorMessage.set(null);
+
+  private showCity(city: CityModel) {
     this.selectedCity.set(city);
     this.loadWeather(city.latitude, city.longitude);
+  }
+
+  protected onCitySelected(city: CityModel) {
+    this.router.navigate([], {
+      queryParams: {
+        name: city.name,
+        country: city.country,
+        lat: city.latitude,
+        lon: city.longitude,
+      },
+    });
   }
 
   protected readonly isFavorite = computed(() => {
