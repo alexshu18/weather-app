@@ -1,6 +1,7 @@
 package com.alexshu.backend.citylist;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,34 +17,34 @@ public class CityListController {
     }
 
     @GetMapping
-    public List<CityListResponse> getAllLists() {
-        return cityListService.getAllLists();
+    public List<CityListResponse> getAllLists(@AuthenticationPrincipal Long userId) {
+        return cityListService.getAllLists(userId);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CityListResponse createList(@RequestBody CreateCityListRequest request) {
-        return cityListService.createList(request.name());
+    public CityListResponse createList(@AuthenticationPrincipal Long userId, @RequestBody CreateCityListRequest request) {
+        return cityListService.createList(userId, request.name());
     }
 
     @PatchMapping("/{id}")
-    public CityListResponse renameList(@PathVariable Long id, @RequestBody RenameCityListRequest request) {
-        return cityListService.renameList(id, request.name());
+    public CityListResponse renameList(@AuthenticationPrincipal Long userId, @PathVariable Long id, @RequestBody RenameCityListRequest request) {
+        return cityListService.renameList(userId, id, request.name());
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/{id}")
-    public void deleteList(@PathVariable Long id) {
-        cityListService.deleteList(id);
+    public void deleteList(@AuthenticationPrincipal Long userId, @PathVariable Long id) {
+        cityListService.deleteList(userId, id);
     }
 
     @PostMapping("/{listId}/cities/{cityId}")
-    public CityListResponse addCityToList(@PathVariable Long listId, @PathVariable Long cityId) {
-        return cityListService.addCityToList(listId, cityId);
+    public CityListResponse addCityToList(@AuthenticationPrincipal Long userId, @PathVariable Long listId, @PathVariable Long cityId) {
+        return cityListService.addCityToList(userId, listId, cityId);
     }
 
     @DeleteMapping("/{listId}/cities/{cityId}")
-    public CityListResponse removeCityFromList(@PathVariable Long listId, @PathVariable Long cityId) {
-        return cityListService.removeCityFromList(listId, cityId);
+    public CityListResponse removeCityFromList(@AuthenticationPrincipal Long userId, @PathVariable Long listId, @PathVariable Long cityId) {
+        return cityListService.removeCityFromList(userId, listId, cityId);
     }
 }

@@ -1,38 +1,51 @@
 package com.alexshu.backend.favorite;
 
+import com.alexshu.backend.user.User;
+import com.alexshu.backend.user.UserRepository;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class FavoriteCityService {
 
     private final FavoriteCityRepository repository;
+    private final UserRepository userRepository;
 
-    public FavoriteCityService(FavoriteCityRepository repository) {
+    public FavoriteCityService(FavoriteCityRepository repository, UserRepository userRepository) {
         this.repository = repository;
+        this.userRepository = userRepository;
     }
 
-
-    public List<FavoriteCity> getAllCities() {
-        return repository.findAll();
+    @Transactional(readOnly = true)
+    public List<FavoriteCity> getAllCities(Long userId) {
+        return repository.findAllByUserId(userId);
     }
 
-    public FavoriteCity addCity(FavoriteCity favCity) {
-        return repository.save(favCity);
-    }
-
-    public void deleteCity(Long id) {
-        if (!repository.existsById(id)) {
-            throw new CityNotFoundException(id);
-        }
-        repository.deleteById(id);
-    }
-
-    public FavoriteCity renameCity(Long id, String newName) {
-        FavoriteCity city = repository.findById(id).orElseThrow(() -> new CityNotFoundException(id));
-        city.setName(newName);
+    @Transactional
+    public FavoriteCity addCity(Long userId, CreateFavoriteCityRequest request) {
+        User user = userRepository.getReferenceById(userId);
+        FavoriteCity city = new FavoriteCity(
+                request.country(), request.latitude(), request.longitude(), request.name(), user);
         return repository.save(city);
+    }
+
+    @Transactional
+    public void deleteCity(Long userId, Long id) {
+        repository.delete(findCityOrThrow(userId, id));
+    }
+
+    @Transactional
+    public FavoriteCity renameCity(Long userId, Long id, String newName) {
+        FavoriteCity city = findCityOrThrow(userId, id);
+        city.setName(newName);
+        return city;
+    }
+
+    private FavoriteCity findCityOrThrow(Long userId, Long id) {
+        return repository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new CityNotFoundException(id));
     }
 }

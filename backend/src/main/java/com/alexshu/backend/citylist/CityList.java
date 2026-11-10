@@ -1,6 +1,7 @@
 package com.alexshu.backend.citylist;
 
 import com.alexshu.backend.favorite.FavoriteCity;
+import com.alexshu.backend.user.User;
 import jakarta.persistence.*;
 
 import java.util.Collections;
@@ -23,12 +24,17 @@ public class CityList {
     )
     private Set<FavoriteCity> cities = new HashSet<>();
 
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
     protected CityList() {
 
     }
 
-    public CityList(String name) {
+    public CityList(String name, User user) {
         this.name = name;
+        this.user = user;
     }
 
     public void setName(String name) {
