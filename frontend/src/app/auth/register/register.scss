@@ -1,0 +1,26 @@
+:host {
+  display: flex;
+  justify-content: center;
+  padding-top: 64px;
+}
+
+mat-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+a {
+  align-self: center;
+}
+
+.server-error {
+  color: var(--mat-sys-error);
+  margin: 0;
+  text-align: center;
+}

@@ -1,4 +1,8 @@
-@if (email(); as e) {
-  <p>Logged in as {{e}}</p>
-}
-<button (click)="logout()">Logout</button>
+<mat-toolbar>
+  <span>Weather App</span>
+  <span class="spacer"></span>
+  @if (email(); as e) {
+    <span class="email">Logged in as {{ e }}</span>
+  }
+  <button matButton="outlined" (click)="logout()" class="logout">Logout</button>
+</mat-toolbar>

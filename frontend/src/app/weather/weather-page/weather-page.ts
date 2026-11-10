@@ -8,10 +8,17 @@ import { FavoriteList } from '../../favorites/favorite-list/favorite-list';
 import { CitySearch } from '../../search/city-search/city-search';
 import { CityModel } from '../../models/favorite-city.model';
 import { Header } from '../../shared/header/header';
+import { MatCardModule } from '@angular/material/card';
 
+const DEFAULT_CITY: CityModel = {
+  name: 'Riga',
+  latitude: 56.95,
+  longitude: 24.11,
+  country: 'Latvia',
+};
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch, Header],
+  imports: [FavoriteList, CitySearch, Header, MatCardModule],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
@@ -20,10 +27,11 @@ export class WeatherPage implements OnInit {
 
   protected readonly weatherData = signal<WeatherModel | undefined>(undefined);
   protected readonly errorMessage = signal<string | null>(null);
+  protected readonly selectedCity = signal<CityModel | null>(null);
   private readonly destroyRef = inject(DestroyRef);
 
   ngOnInit() {
-    this.loadWeather(56.95, 24.11);
+    this.onCitySelected(DEFAULT_CITY);
   }
 
   private loadWeather(latitude: number, longitude: number) {
@@ -43,6 +51,9 @@ export class WeatherPage implements OnInit {
       });
   }
   protected onCitySelected(city: CityModel) {
+    this.selectedCity.set(city);
     this.loadWeather(city.latitude, city.longitude);
   }
+
+  protected readonly DEFAULT_CITY = DEFAULT_CITY;
 }

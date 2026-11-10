@@ -1,10 +1,12 @@
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { AuthService } from '../../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-header',
-  imports: [],
+  imports: [MatToolbarModule, MatButtonModule],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })
