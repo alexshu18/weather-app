@@ -1,5 +1,4 @@
-<input #cityInput (keyup.enter)="search(cityInput.value)" placeholder="Search city...">
-<button (click)="search(cityInput.value)">Search</button>
+<input #cityInput (input)="search(cityInput.value)" placeholder="Search city...">
 @if (errorMessage(); as em) {
   <p>{{ em }}</p>
 }
