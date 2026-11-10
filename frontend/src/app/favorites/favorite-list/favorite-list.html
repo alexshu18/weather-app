@@ -5,7 +5,7 @@
   <mat-card-content>
     <mat-list>
       @for (city of favoriteCityService.cities(); track city.id) {
-        <mat-list-item class="city" (click)="citySelected.emit(city)">
+        <mat-list-item class="city" (click)="openCity(city)">
           <span matListItemTitle>{{ city.name }}</span>
           <span matListItemLine>{{ city.country }}</span>
           <button matIconButton matListItemMeta (click)="deleteCity(city.id, $event)" aria-label="Delete">
