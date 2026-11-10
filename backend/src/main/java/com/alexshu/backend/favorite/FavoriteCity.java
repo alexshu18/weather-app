@@ -1,9 +1,7 @@
 package com.alexshu.backend.favorite;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.alexshu.backend.user.User;
+import jakarta.persistence.*;
 
 @Entity
 public class FavoriteCity {
@@ -20,11 +18,16 @@ public class FavoriteCity {
 
     }
 
-    public FavoriteCity(String country, Double latitude, Double longitude, String name) {
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public FavoriteCity(String country, Double latitude, Double longitude, String name, User user) {
         this.country = country;
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
+        this.user = user;
     }
 
     public void setCountry(String country) {
