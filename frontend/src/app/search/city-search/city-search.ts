@@ -1,45 +1,75 @@
-import { Component, DestroyRef, inject, output, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { Geocoding } from '../../services/geocoding';
 import { GeocodingResult } from '../../models/geocoding.model';
 import { CityModel } from '../../models/favorite-city.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getHttpError } from '../../shared/http-error';
 import { HttpErrorResponse } from '@angular/common/http';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  of,
+  Subject,
+  switchMap,
+} from 'rxjs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-city-search',
-  imports: [],
+  imports: [MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatProgressSpinnerModule],
   templateUrl: './city-search.html',
   styleUrl: './city-search.scss',
 })
 export class CitySearch {
   private readonly citySearchService = inject(Geocoding);
-  private readonly destroyRef = inject(DestroyRef);
   protected readonly cityResults = signal<GeocodingResult[] | undefined>(undefined);
   protected readonly errorMessage = signal<string | null>(null);
   readonly citySelected = output<CityModel>();
+  private readonly searchTerms = new Subject<string>();
+  protected readonly loading = signal(false);
 
-  search(name: string) {
-    if (name.trim() === '') {
-      return;
-    }
-    this.citySearchService
-      .searchCity(name.trim())
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (response) => {
+  constructor() {
+    this.searchTerms
+      .pipe(
+        map((name) => name.trim()),
+        debounceTime(400),
+        distinctUntilChanged(),
+        switchMap((name) => {
           this.errorMessage.set(null);
-          this.cityResults.set(response.results ?? []);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.errorMessage.set(getHttpError(err.status));
-          console.error(err);
-        },
+          if (name.length < 2) {
+            return of(undefined);
+          }
+          this.loading.set(true);
+          return this.citySearchService.searchCity(name).pipe(
+            map((response) => response.results ?? []),
+            catchError((err: HttpErrorResponse) => {
+              this.errorMessage.set(getHttpError(err.status));
+              return of(undefined);
+            }),
+            finalize(() => this.loading.set(false)),
+          );
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe((results) => {
+        this.cityResults.set(results);
       });
   }
 
-  selectCity(city: GeocodingResult) {
+  search(name: string) {
+    this.searchTerms.next(name);
+  }
+
+  selectCity(city: GeocodingResult, input: HTMLInputElement) {
     this.citySelected.emit(city);
+    input.value = '';
+    this.searchTerms.next('');
     this.cityResults.set(undefined);
   }
 }
