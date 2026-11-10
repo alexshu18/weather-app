@@ -1,13 +1,23 @@
-<ul>
-  @for (city of favoriteCities(); track city.id) {
-    <li>{{ city.name }}, {{ city.country }}
-      <button (click)="deleteCity(city.id)">Delete</button>
-    </li>
-  } @empty {
-    <li>There are no cities</li>
-  }
-</ul>
-@if (errorMessage(); as em) {
-  <p>{{ em }}</p>
-}
-
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Favorites</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <mat-list>
+      @for (city of favoriteCityService.cities(); track city.id) {
+        <mat-list-item class="city" (click)="citySelected.emit(city)">
+          <span matListItemTitle>{{ city.name }}</span>
+          <span matListItemLine>{{ city.country }}</span>
+          <button matIconButton matListItemMeta (click)="deleteCity(city.id, $event)" aria-label="Delete">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </mat-list-item>
+      } @empty {
+        <mat-list-item>No favorite cities yet</mat-list-item>
+      }
+    </mat-list>
+    @if (errorMessage(); as em) {
+      <p class="server-error">{{ em }}</p>
+    }
+  </mat-card-content>
+</mat-card>

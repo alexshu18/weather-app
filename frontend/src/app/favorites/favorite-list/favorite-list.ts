@@ -1,50 +1,43 @@
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
 import { FavoriteCity } from '../../services/favorite-city';
-import { FavoriteCityModel } from '../../models/favorite-city.model';
+import { CityModel, FavoriteCityModel } from '../../models/favorite-city.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getHttpError } from '../../shared/http-error';
+import { MatCardModule } from '@angular/material/card';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-favorite-list',
-  imports: [],
+  imports: [MatCardModule, MatListModule, MatIconModule, MatButtonModule],
   templateUrl: './favorite-list.html',
   styleUrl: './favorite-list.scss',
 })
 export class FavoriteList implements OnInit {
-  private readonly favoriteCityService = inject(FavoriteCity);
-  protected readonly favoriteCities = signal<FavoriteCityModel[]>([]);
-  protected readonly errorMessage = signal<string | null>(null);
+  protected readonly favoriteCityService = inject(FavoriteCity);
   private readonly destroyRef = inject(DestroyRef);
+  protected readonly errorMessage = signal<string | null>(null);
+  readonly citySelected = output<CityModel>();
 
   ngOnInit() {
     this.favoriteCityService
       .getAllCities()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (data) => {
-          this.favoriteCities.set(data);
-        },
-        error: (err: HttpErrorResponse) => {
-          this.errorMessage.set(getHttpError(err.status));
-          console.error(err);
-        },
+        error: (err: HttpErrorResponse) => this.errorMessage.set(getHttpError(err.status)),
       });
   }
 
-  deleteCity(id: number) {
+  deleteCity(id: number, event: Event) {
+    event.stopPropagation();
     this.favoriteCityService
       .deleteCity(id)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: () => {
-          this.errorMessage.set(null);
-          this.favoriteCities.update((cities) => cities.filter((city) => city.id !== id));
-        },
-        error: (err: HttpErrorResponse) => {
-          this.errorMessage.set(getHttpError(err.status));
-          console.error(err);
-        },
+        next: () => this.errorMessage.set(null),
+        error: (err: HttpErrorResponse) => this.errorMessage.set(getHttpError(err.status)),
       });
   }
 }

@@ -14,11 +14,19 @@
           <span>Rain: {{ wd.current.rain }} mm</span>
         </div>
       </mat-card-content>
+      <mat-card-actions>
+        <button matButton (click)="addToFavorites()" [disabled]="isFavorite()">
+          {{ isFavorite() ? 'In favorites' : 'Add to favorites' }}
+        </button>
+      </mat-card-actions>
+      @if (errorMessage(); as em) {
+        <p class="server-error">{{ em }}</p>
+      }
     </mat-card>
   } @else if (errorMessage(); as em) {
     <p>{{ em }}</p>
   } @else {
     <mat-spinner diameter="40" />
   }
-  <app-favorite-list></app-favorite-list>
+  <app-favorite-list (citySelected)="onCitySelected($event)" />
 </main>
