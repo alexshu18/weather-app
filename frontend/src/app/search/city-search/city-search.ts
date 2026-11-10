@@ -5,8 +5,16 @@ import { CityModel } from '../../models/favorite-city.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { getHttpError } from '../../shared/http-error';
 import { HttpErrorResponse } from '@angular/common/http';
-import { catchError, debounceTime, distinctUntilChanged, map, of, Subject, switchMap } from 'rxjs';
-import { ReactiveFormsModule } from '@angular/forms';
+import {
+  catchError,
+  debounceTime,
+  distinctUntilChanged,
+  finalize,
+  map,
+  of,
+  Subject,
+  switchMap,
+} from 'rxjs';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
@@ -14,13 +22,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-city-search',
-  imports: [
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatAutocompleteModule,
-    MatProgressSpinnerModule,
-  ],
+  imports: [MatFormFieldModule, MatInputModule, MatAutocompleteModule, MatProgressSpinnerModule],
   templateUrl: './city-search.html',
   styleUrl: './city-search.scss',
 })
@@ -30,6 +32,7 @@ export class CitySearch {
   protected readonly errorMessage = signal<string | null>(null);
   readonly citySelected = output<CityModel>();
   private readonly searchTerms = new Subject<string>();
+  protected readonly loading = signal(false);
 
   constructor() {
     this.searchTerms
@@ -42,12 +45,14 @@ export class CitySearch {
           if (name.length < 2) {
             return of(undefined);
           }
+          this.loading.set(true);
           return this.citySearchService.searchCity(name).pipe(
             map((response) => response.results ?? []),
             catchError((err: HttpErrorResponse) => {
               this.errorMessage.set(getHttpError(err.status));
               return of(undefined);
             }),
+            finalize(() => this.loading.set(false)),
           );
         }),
         takeUntilDestroyed(),
@@ -61,8 +66,10 @@ export class CitySearch {
     this.searchTerms.next(name);
   }
 
-  selectCity(city: GeocodingResult) {
+  selectCity(city: GeocodingResult, input: HTMLInputElement) {
     this.citySelected.emit(city);
+    input.value = '';
+    this.searchTerms.next('');
     this.cityResults.set(undefined);
   }
 }
