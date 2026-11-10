@@ -35,8 +35,14 @@ export class Login {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly loading = signal<boolean>(false);
-  protected readonly error = signal<string | null>(null);
 
+  protected readonly error = signal<string | null>(null);
+  protected get email() {
+    return this.loginForm.controls.email;
+  }
+  protected get password() {
+    return this.loginForm.controls.password;
+  }
   protected onSubmit() {
     if (this.loginForm.invalid) {
       this.loginForm.markAllAsTouched();

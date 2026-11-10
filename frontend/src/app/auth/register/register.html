@@ -8,9 +8,9 @@
         <mat-label>Email</mat-label>
         <input matInput formControlName="email" type="email">
         <mat-error>
-          @if (registerForm.controls.email.hasError('required')) {
+          @if (email.hasError('required')) {
             Email is required
-          } @else if (registerForm.controls.email.hasError('email')) {
+          } @else if (email.hasError('email')) {
             Invalid email format
           }
         </mat-error>
@@ -19,9 +19,9 @@
         <mat-label>Password</mat-label>
         <input matInput formControlName="password" type="password">
         <mat-error>
-          @if (registerForm.controls.password.hasError('required')) {
+          @if (password.hasError('required')) {
             Password is required
-          } @else if (registerForm.controls.password.hasError('minlength')) {
+          } @else if (password.hasError('minlength')) {
             Minimal length of password is 8 characters
           }
         </mat-error>

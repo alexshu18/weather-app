@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal, OnInit } from '@angular/core';
+import { Component, DestroyRef, inject, signal, OnInit, computed } from '@angular/core';
 import { WeatherService } from '../../services/weather';
 import { WeatherModel } from '../../models/weather.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -10,6 +10,8 @@ import { CityModel } from '../../models/favorite-city.model';
 import { Header } from '../../shared/header/header';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { FavoriteCity } from '../../services/favorite-city';
+import { MatButtonModule } from '@angular/material/button';
 
 const DEFAULT_CITY: CityModel = {
   name: 'Riga',
@@ -19,7 +21,7 @@ const DEFAULT_CITY: CityModel = {
 };
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch, Header, MatCardModule, MatProgressSpinner],
+  imports: [FavoriteList, CitySearch, Header, MatCardModule, MatProgressSpinner, MatButtonModule],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
@@ -30,9 +32,20 @@ export class WeatherPage implements OnInit {
   protected readonly errorMessage = signal<string | null>(null);
   protected readonly selectedCity = signal<CityModel | null>(null);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly favoriteCityService = inject(FavoriteCity);
 
   ngOnInit() {
     this.onCitySelected(DEFAULT_CITY);
+  }
+  addToFavorites() {
+    const city = this.selectedCity();
+    if (!city) return;
+    this.favoriteCityService
+      .addCity(city)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (err: HttpErrorResponse) => this.errorMessage.set(getHttpError(err.status)),
+      });
   }
 
   private loadWeather(latitude: number, longitude: number) {
@@ -58,5 +71,17 @@ export class WeatherPage implements OnInit {
     this.loadWeather(city.latitude, city.longitude);
   }
 
-  protected readonly DEFAULT_CITY = DEFAULT_CITY;
+  protected readonly isFavorite = computed(() => {
+    const city = this.selectedCity();
+    return (
+      !!city &&
+      this.favoriteCityService
+        .cities()
+        .some(
+          (f) =>
+            Math.abs(f.latitude - city.latitude) < 0.01 &&
+            Math.abs(f.longitude - city.longitude) < 0.01,
+        )
+    );
+  });
 }

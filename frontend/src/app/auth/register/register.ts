@@ -38,6 +38,13 @@ export class Register {
   protected readonly loading = signal<boolean>(false);
   protected readonly error = signal<string | null>(null);
 
+  protected get email() {
+    return this.registerForm.controls.email;
+  }
+  protected get password() {
+    return this.registerForm.controls.password;
+  }
+
   protected onSubmit() {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
