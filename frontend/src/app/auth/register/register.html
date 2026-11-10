@@ -26,7 +26,13 @@
           }
         </mat-error>
       </mat-form-field>
-      <button matButton="filled" type="submit" [disabled]="loading()">Register</button>
+      <button matButton="filled" type="submit" [disabled]="loading()">
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Register
+        }
+      </button>
       @if (error(); as err) {
         <p class="server-error">{{ err }}</p>
       }
