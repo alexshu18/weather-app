@@ -10,6 +10,7 @@ import { MatCardHeader, MatCardModule, MatCardTitle } from '@angular/material/ca
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-register',
@@ -20,6 +21,7 @@ import { MatButtonModule } from '@angular/material/button';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatProgressSpinner,
   ],
   templateUrl: './register.html',
   styleUrl: './register.scss',

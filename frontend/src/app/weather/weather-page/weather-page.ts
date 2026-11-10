@@ -9,6 +9,7 @@ import { CitySearch } from '../../search/city-search/city-search';
 import { CityModel } from '../../models/favorite-city.model';
 import { Header } from '../../shared/header/header';
 import { MatCardModule } from '@angular/material/card';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 
 const DEFAULT_CITY: CityModel = {
   name: 'Riga',
@@ -18,7 +19,7 @@ const DEFAULT_CITY: CityModel = {
 };
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch, Header, MatCardModule],
+  imports: [FavoriteList, CitySearch, Header, MatCardModule, MatProgressSpinner],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
@@ -51,6 +52,8 @@ export class WeatherPage implements OnInit {
       });
   }
   protected onCitySelected(city: CityModel) {
+    this.weatherData.set(undefined);
+    this.errorMessage.set(null);
     this.selectedCity.set(city);
     this.loadWeather(city.latitude, city.longitude);
   }
