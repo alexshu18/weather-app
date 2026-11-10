@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import { environment } from '../../environments/environment';
 import { LoginRequest, LoginResponse, RegisterRequest, UserResponse } from '../models/auth.model';
 import { Observable, tap } from 'rxjs';
+import { TokenStorage } from './token-storage';
 
-const TOKEN_KEY = 'accessToken';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +14,8 @@ export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly router = inject(Router);
   private readonly apiUrl = `${environment.backendApiUrl}/auth`;
-  private token = signal<string | null>(localStorage.getItem(TOKEN_KEY));
+  private readonly tokenStorage = inject(TokenStorage);
+  private readonly token = signal<string | null>(this.tokenStorage.get());
   readonly isLoggedIn = computed(() => this.token() !== null);
 
   login(request: LoginRequest): Observable<LoginResponse> {
@@ -32,7 +33,7 @@ export class AuthService {
   }
 
   logout() {
-    localStorage.removeItem(TOKEN_KEY);
+    this.tokenStorage.clear();
     this.token.set(null);
     this.router.navigate(['/login']);
   }
@@ -42,7 +43,7 @@ export class AuthService {
   }
 
   private saveToken(accessToken: string) {
-    localStorage.setItem(TOKEN_KEY, accessToken);
+    this.tokenStorage.set(accessToken);
     this.token.set(accessToken);
   }
 }
