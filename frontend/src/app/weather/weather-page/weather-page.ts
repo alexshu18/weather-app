@@ -4,7 +4,6 @@ import { WeatherModel } from '../../models/weather.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { HttpErrorResponse } from '@angular/common/http';
 import { getHttpError } from '../../shared/http-error';
-import { FavoriteList } from '../../favorites/favorite-list/favorite-list';
 import { CitySearch } from '../../search/city-search/city-search';
 import { CityModel } from '../../models/favorite-city.model';
 import { MatCardModule } from '@angular/material/card';
