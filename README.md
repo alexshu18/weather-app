@@ -78,6 +78,12 @@ ng serve
 
 Open http://localhost:4200. Not logged-in users are redirected to `/login`.
 
+| Route | Page |
+|---|---|
+| `/login`, `/register` | Authentication forms |
+| `/weather?name=&country=&lat=&lon=` | City search and the weather card; without params opens Riga |
+| `/favorites` | The user's favourite cities; a click opens the city on `/weather` |
+
 ### Reset the database
 
 ```bash
@@ -148,8 +154,9 @@ Work in progress. Features are developed in branches and merged into `main` via 
 - [x] Token storage in a separate service, login state as a signal (`computed` `isLoggedIn`)
 - [x] Header with the current user's email and logout, shown only when logged in
 - [x] City search with autocomplete: `debounceTime`, `distinctUntilChanged`, `switchMap` (cancels outdated requests), `catchError` inside `switchMap` so one failed request does not stop the search
-- [x] Favourites: add from the weather card, delete, click to show weather; list state shared between components through a service with a read-only signal
+- [x] Favourites: add from the weather card, delete, click to open the city's weather; list state shared between pages through a service with a read-only signal
 - [x] Selected city kept in URL query params (survives reload, works with the browser Back button)
+- [x] Separate favourites page: data preloaded by a route resolver, header navigation with `routerLinkActive`
 - [x] Angular Material UI (cards, form fields, autocomplete, list, toolbar, spinners) with a custom theme
 - [x] Loading and error states, shared helper for error messages based on HTTP status
 
@@ -168,6 +175,7 @@ Work in progress. Features are developed in branches and merged into `main` via 
 - [ ] Prevent duplicate favourites on the server (`UNIQUE` constraint), now only checked in the UI
 - [ ] Request validation (400 Bad Request) and centralized error handling with `@RestControllerAdvice`
 - [ ] Load weather through `switchMap` on the URL params to cancel outdated requests when switching cities fast
+- [ ] Remember the last selected city, so the Weather link does not fall back to the default city
 - [ ] Multi-day forecast
 - [ ] Unit tests (`HttpTestingController` on the frontend, service and controller tests on the backend)
 - [ ] CI with GitHub Actions
