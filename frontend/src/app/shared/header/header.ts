@@ -3,10 +3,11 @@ import { AuthService } from '../../services/auth-service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-header',
-  imports: [MatToolbarModule, MatButtonModule],
+  imports: [MatToolbarModule, MatButtonModule, RouterLink, RouterLinkActive],
   templateUrl: './header.html',
   styleUrl: './header.scss',
 })

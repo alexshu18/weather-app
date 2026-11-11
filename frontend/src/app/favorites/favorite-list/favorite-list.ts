@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, OnInit, output, signal } from '@angular/core';
+import { Component, DestroyRef, inject, output, signal } from '@angular/core';
 import { FavoriteCity } from '../../services/favorite-city';
 import { CityModel, FavoriteCityModel } from '../../models/favorite-city.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -8,6 +8,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-favorite-list',
@@ -15,19 +16,21 @@ import { MatButtonModule } from '@angular/material/button';
   templateUrl: './favorite-list.html',
   styleUrl: './favorite-list.scss',
 })
-export class FavoriteList implements OnInit {
+export class FavoriteList {
   protected readonly favoriteCityService = inject(FavoriteCity);
   private readonly destroyRef = inject(DestroyRef);
   protected readonly errorMessage = signal<string | null>(null);
-  readonly citySelected = output<CityModel>();
+  private readonly router = inject(Router);
 
-  ngOnInit() {
-    this.favoriteCityService
-      .getAllCities()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        error: (err: HttpErrorResponse) => this.errorMessage.set(getHttpError(err.status)),
-      });
+  protected openCity(city: FavoriteCityModel) {
+    this.router.navigate(['/weather'], {
+      queryParams: {
+        name: city.name,
+        country: city.country,
+        lat: city.latitude,
+        lon: city.longitude,
+      },
+    });
   }
 
   deleteCity(id: number, event: Event) {

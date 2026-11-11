@@ -1,5 +1,7 @@
 <mat-toolbar>
   <span>Weather App</span>
+  <a matButton routerLink="/weather" routerLinkActive="active">Weather</a>
+  <a matButton routerLink="/favorites" routerLinkActive="active">Favorites</a>
   <span class="spacer"></span>
   @if (email(); as e) {
     <span class="email">Logged in as {{ e }}</span>

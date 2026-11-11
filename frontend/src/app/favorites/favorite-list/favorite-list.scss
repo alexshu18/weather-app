@@ -5,3 +5,10 @@
 .server-error {
   color: var(--mat-sys-error);
 }
+
+:host {
+  display: block;
+  max-width: 800px;
+  margin: 24px auto;
+  padding: 0 24px;
+}

@@ -18,3 +18,7 @@ mat-toolbar {
   font: var(--mat-sys-body-medium);
   margin-right: 12px;
 }
+
+.active {
+  text-decoration: underline;
+}
