@@ -21,7 +21,7 @@ const DEFAULT_CITY: CityModel = {
 };
 @Component({
   selector: 'app-weather-page',
-  imports: [FavoriteList, CitySearch, MatCardModule, MatProgressSpinner, MatButtonModule],
+  imports: [CitySearch, MatCardModule, MatProgressSpinner, MatButtonModule],
   templateUrl: './weather-page.html',
   styleUrl: './weather-page.scss',
 })
